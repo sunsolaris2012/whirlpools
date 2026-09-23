@@ -11,9 +11,29 @@ jobs:
           toolchain: 1.86.0
       - name: Install Solana
         run: |
-          sh -c "$(curl -sSfL https://release.anza.xyz/stable/install)"
-          echo "$HOME/.local/share/solana/install/active_release/bin" >> $GITHUB_PATH
+          curl -sSfL -o solana.tar.bz2 https://github.com/anza-xyz/agave/releases/download/v2.2.1/solana-release-x86_64-unknown-linux-gnu.tar.bz2
+          tar xjf solana.tar.bz2
+          echo "$PWD/solana-release/bin" >> $GITHUB_PATH
+      - name: Verify Solana
+        run: |
+          export PATH="$PWD/solana-release/bin:$PATH"
+          solana --version
+          which cargo-build-sbf
+      - name: List test files
+        run: |
+          echo "=== files in programs/whirlpool/tests/ ==="
+          ls -la programs/whirlpool/tests/ || echo "NO TESTS DIR"
+          echo ""
+          echo "=== real_attack.rs head ==="
+          head -30 programs/whirlpool/tests/real_attack.rs || echo "NO FILE"
       - name: Build BPF
-        run: cargo build-sbf --manifest-path programs/whirlpool/Cargo.toml 2>&1 | tail -10
+        run: |
+          export PATH="$PWD/solana-release/bin:$PATH"
+          cargo build-sbf --manifest-path programs/whirlpool/Cargo.toml
+      - name: List BPF artifacts
+        run: |
+          ls -la target/deploy/ 2>/dev/null || echo "No deploy dir"
       - name: Run PoC
-        run: cargo test -p whirlpool --test real_attack -- --nocapture 2>&1 | tail -120
+        run: |
+          export PATH="$PWD/solana-release/bin:$PATH"
+          cargo test -p whirlpool --test real_attack -- --nocapture --test-threads=1
