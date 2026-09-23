@@ -14,10 +14,14 @@ jobs:
           curl -sSfL -o solana.tar.bz2 https://github.com/anza-xyz/agave/releases/download/v2.2.1/solana-release-x86_64-unknown-linux-gnu.tar.bz2
           tar xjf solana.tar.bz2
           echo "$PWD/solana-release/bin" >> $GITHUB_PATH
-      - name: Show resolved versions
+      - name: Clean previous build and lockfile
         run: |
-          grep -A1 "name = \"solana-account-info\"" Cargo.lock
-          grep -A1 "name = \"solana-instructions-sysvar\"" Cargo.lock
+          cargo clean -p whirlpool || true
+          rm -f Cargo.lock
+      - name: Verify dependency resolution
+        run: |
+          cargo tree -p anchor-lang -i solana-account-info || true
+          cargo tree -p anchor-lang -i solana-instructions-sysvar || true
       - name: Build BPF
         run: |
           export PATH="$PWD/solana-release/bin:$PATH"
