@@ -14,33 +14,10 @@ jobs:
           curl -sSfL -o solana.tar.bz2 https://github.com/anza-xyz/agave/releases/download/v2.2.1/solana-release-x86_64-unknown-linux-gnu.tar.bz2
           tar xjf solana.tar.bz2
           echo "$PWD/solana-release/bin" >> $GITHUB_PATH
-      - name: Downgrade incompatible solana crates
+      - name: Show resolved versions
         run: |
-          cargo update -p solana-account-info --precise 2.2.1
-          cargo update -p solana-instructions-sysvar --precise 2.2.1
-          cargo update -p solana-program-memory --precise 2.2.1
-          cargo update -p solana-program-entrypoint --precise 2.2.1
-          cargo update -p solana-decode-error --precise 2.2.1
-          cargo update -p solana-define-syscall --precise 2.2.1
-          cargo update -p solana-native-token --precise 2.2.1
-          cargo update -p solana-program-error --precise 2.2.1
-          cargo update -p solana-instruction --precise 2.2.1
-          cargo update -p solana-msg --precise 2.2.1
-          cargo update -p solana-pubkey --precise 2.2.1
-          cargo update -p solana-hash --precise 2.2.1
-          cargo update -p solana-sha256-hasher --precise 2.2.1
-          cargo update -p solana-sysvar --precise 2.2.1
-          cargo update -p solana-sysvar-id --precise 2.2.1
-          cargo update -p solana-clock --precise 2.2.1
-          cargo update -p solana-rent --precise 2.2.1
-          cargo update -p solana-sanitize --precise 2.2.1
-          cargo update -p solana-sdk-ids --precise 2.2.1
-          cargo update -p solana-sdk-macro --precise 2.2.1
-          cargo update -p solana-slot-hashes --precise 2.2.1
-          cargo update -p solana-slot-history --precise 2.2.1
-          cargo update -p solana-stable-layout --precise 2.2.1
-          cargo update -p solana-transaction-error --precise 2.2.1
-          cargo update -p solana-serialize-utils --precise 2.2.1
+          grep -A1 "name = \"solana-account-info\"" Cargo.lock
+          grep -A1 "name = \"solana-instructions-sysvar\"" Cargo.lock
       - name: Build BPF
         run: |
           export PATH="$PWD/solana-release/bin:$PATH"
