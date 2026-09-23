@@ -14,12 +14,21 @@ jobs:
           curl -sSfL -o solana.tar.bz2 https://github.com/anza-xyz/agave/releases/download/v2.2.1/solana-release-x86_64-unknown-linux-gnu.tar.bz2
           tar xjf solana.tar.bz2
           echo "$PWD/solana-release/bin" >> $GITHUB_PATH
-      - name: Pin incompatible solana deps
+      - name: Fix solana crate versions
         run: |
-          cargo update -p solana-account-info --precise 2.3.0 || true
-          cargo update -p solana-instructions-sysvar --precise 2.2.2 || true
-          cargo update -p solana-program --precise 2.2.1 || true
-          cargo update -p solana-account-info --precise 2.3.0 || true
+          cargo update -p solana-account-info --precise 2.2.1
+          cargo update -p solana-instructions-sysvar --precise 2.2.1
+          cargo update -p solana-hash --precise 2.2.1
+          cargo update -p solana-sha256-hasher --precise 2.2.1
+          cargo update -p solana-program-memory --precise 2.2.1
+          cargo update -p solana-program-entrypoint --precise 2.2.1
+          cargo update -p solana-decode-error --precise 2.2.1
+          cargo update -p solana-define-syscall --precise 2.2.1
+          cargo update -p solana-native-token --precise 2.2.1
+          cargo update -p solana-program-error --precise 2.2.1
+          cargo update -p solana-instruction --precise 2.2.1
+          cargo update -p solana-msg --precise 2.2.1
+          cargo update -p solana-pubkey --precise 2.2.1
       - name: Build BPF
         run: |
           export PATH="$PWD/solana-release/bin:$PATH"
